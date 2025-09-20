@@ -155,14 +155,13 @@ vimath.nvim/
 ├── examples/            # Example input files
 │   └── sample.txt
 ├── docs/                # Documentation
-│   └── PROJECT.md       # This document
-└── README.md
+└── README.md            # This document
 ```
 
 ## 📖 Relevant Notes
 
 - **Integration Model**:
-  Initially, Go will be compiled into a binary that Lua calls via `jobstart()`. Later, consider FFI or RPC integration for performance.
+  Initially, Go will be compiled into a binary that Lua calls via `jobstart()`.
 
 - **Overengineering Acknowledged**:
   The project’s main function (evaluate expressions in text) could be solved with simpler tools (like Lua `load()`), but the deliberate choice is to **overengineer for learning purposes**.
