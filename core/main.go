@@ -12,5 +12,5 @@ func main() {
 	}
 	defer file.Close()
 
-	lexer(file)
+	Lexer(file)
 }
