@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
 )
@@ -12,5 +13,11 @@ func main() {
 	}
 	defer file.Close()
 
-	Lexer(file)
+	lexer := NewLexer()
+	stringTokens := lexer.LexicAnalysis(file)
+	fmt.Print("########### Starting printing outputs... ###########\n")
+	for _, lexerToken := range stringTokens {
+		fmt.Printf("Line: %+v\nTokens: %+v\n", lexerToken.String, lexerToken.Tokens)
+	}
+	fmt.Print("########### Finished printing outputs... ###########\n")
 }
