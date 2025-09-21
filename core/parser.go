@@ -1,8 +1,8 @@
 package main
 
 import (
+	"errors"
 	"fmt"
-	"strconv"
 )
 
 type Node struct{}
@@ -39,18 +39,54 @@ func NewParser(tokens []Token) *Parser {
 	return &Parser{Tokens: tokens, Pos: 0}
 }
 
-func (p *Parser) parseAssignmentStmt() *AssignmentStmt {
-	currentToken := p.Tokens[p.Pos]
-	if p.Pos >= len(p.Tokens) || currentToken.Type != IDENTIFIER {
-		return nil
-	}
-	name := currentToken.Lexeme
-	p.Pos++
+func (p *Parser) Empty() bool {
+	return p.Pos >= len(p.Tokens)
+}
 
-	if p.Pos >= len(p.Tokens) || p.Tokens[p.Pos].Type != EQUAL {
+func (p *Parser) Peek() (token Token, err error) {
+	if p.Empty() {
+		return Token{}, errors.New("[peek] No more tokens")
+	}
+
+	return p.Tokens[p.Pos], nil
+}
+
+func (p *Parser) Advance() (token Token, err error) {
+	if p.Empty() {
+		return Token{}, errors.New("[advance] No more tokens")
+	}
+
+	p.Pos++
+	return p.Tokens[p.Pos], nil
+}
+
+func (p *Parser) parseAssignmentStmt() *AssignmentStmt {
+	currentToken, err := p.Peek()
+	if err != nil {
+		fmt.Print("[parseAssignmentStmt] %s", err)
 		return nil
 	}
-	p.Pos++
+
+	if p.Empty() || currentToken.Type != IDENTIFIER {
+		return nil
+	}
+
+	name := currentToken.Lexeme
+	currentToken, err = p.Advance()
+
+	if err != nil {
+		fmt.Print("[parseAssignmentStmt] %s", err)
+		return nil
+	}
+
+	if p.Empty() || currentToken.Type != EQUAL {
+		return nil
+	}
+	currentToken, err = p.Advance()
+	if err != nil {
+		fmt.Print("[parseAssignmentStmt] %s", err)
+		return nil
+	}
 
 	val := p.parseExpression()
 	if val != nil {
@@ -61,18 +97,19 @@ func (p *Parser) parseAssignmentStmt() *AssignmentStmt {
 }
 
 func (p *Parser) parseExpression() Expression {
-	currentToken := p.Tokens[p.Pos]
-	nextToken := p.Tokens[p.Pos+1]
-	nextNextToken := p.Tokens[p.Pos+1]
+	// currentToken := p.Tokens[p.Pos]
+	// nextToken := p.Tokens[p.Pos+1]
+	// nextNextToken := p.Tokens[p.Pos+1]
+	//
+	// if currentToken.Type == NUMBER {
+	// 	if (nextToken.Type == PLUS || nextToken.Type == MINUS) && (nextNextToken.Type == NUMBER) {
+	// 		return &BinaryExpr{
+	// 			Left:  currentToken,
+	// 			Op:    nextToken.Type,
+	// 			Right: nextNextToken,
+	// 		}
+	// 	}
+	// }
 
-	if currentToken.Type == NUMBER {
-		if (nextToken.Type == PLUS || nextToken.Type == MINUS) && (nextNextToken.Type == NUMBER) {
-			return &BinaryExpr{
-				Left:  currentToken,
-				Op:    nextToken.Type,
-				Right: nextNextToken,
-			}
-		}
-	}
 	return nil
 }
