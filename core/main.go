@@ -1,17 +1,30 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 )
 
 func main() {
-	file, err := os.Open("examples/example1.txt")
+	var filename string
+	flag.StringVar(&filename, "file", "example1.txt", "Filename to parse (searched in examples/ directory)")
+	flag.Parse()
+
+	filePath := filepath.Join("examples", filename)
+	if _, err := os.Stat(filePath); os.IsNotExist(err) {
+		log.Fatalf("File not found: %s", filePath)
+	}
+
+	file, err := os.Open(filePath)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer file.Close()
+
+	fmt.Printf("########### Parsing file: %s ###########\n", filePath)
 
 	lexer := NewLexer()
 	stringTokens := lexer.LexicAnalysis(file)
@@ -30,5 +43,4 @@ func main() {
 		}
 	}
 	fmt.Print("########### Finished printing outputs... ###########\n")
-
 }

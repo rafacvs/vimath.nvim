@@ -140,7 +140,44 @@ Planned future version built in **Zig** to learn:
 
 > **Goal**: Learn explicit memory management and performance optimization
 
-## 📂 Repository Structure (Proposed)
+## 🚀 Running the Code
+
+### Prerequisites
+
+- Go 1.19+ installed on your system
+
+### Command Line Usage
+
+The core interpreter can be run from the project root directory using:
+
+```bash
+go run core/*.go --file <filename>
+```
+
+The `--file` parameter specifies which file to parse from the `examples/` directory.
+
+#### Examples:
+
+```bash
+# Run with the default example file
+go run core/*.go --file example1.txt
+
+# Run with parser test files
+go run core/*.go --file parser1.txt
+go run core/*.go --file parser2.txt
+go run core/*.go --file parser3.txt
+go run core/*.go --file parser4.txt
+```
+
+#### Available Test Files:
+
+- `example1.txt` - Real-world usage example with comments and complex expressions
+- `parser1.txt` - Basic arithmetic operations (addition, subtraction)
+- `parser2.txt` - Operator precedence testing (multiplication, mixed operations)
+- `parser3.txt` - Edge cases and complex scenarios (unary operators, division, nested parentheses)
+- `parser4.txt` - Error cases and boundary conditions
+
+## 📂 Repository Structure
 
 ```plaintext
 vimath.nvim/
@@ -153,7 +190,11 @@ vimath.nvim/
 │   ├── init.lua
 │   └── utils.lua
 ├── examples/            # Example input files
-│   └── sample.txt
+│   ├── example1.txt
+│   ├── parser1.txt
+│   ├── parser2.txt
+│   ├── parser3.txt
+│   └── parser4.txt
 ├── docs/                # Documentation
 └── README.md            # This document
 ```
