@@ -1,10 +1,7 @@
 package main
 
 import (
-	"bufio"
 	"fmt"
-	"log"
-	"os"
 )
 
 type TokenType int
@@ -67,36 +64,22 @@ func NewLexer() *Lexer {
 type LexerTokens struct {
 	String string
 	Tokens []Token
+	Index  int
 }
 
-/*
-* TODO: move file reading to main.go. Kept here for
-* now to make testing easier, as I'm not really sure
-* what I'm doing yet. Wont move to NewLexer either
-* as eventually it'll go to main.
- */
-func (l *Lexer) LexicAnalysis(file *os.File) []LexerTokens {
-	// fmt.Print("########### Starting lexical analysis... ###########\n")
+func (l *Lexer) LexicAnalysis(lines []string) []LexerTokens {
 	var lexerLines []LexerTokens
-	scanner := bufio.NewScanner(file)
+	for index, line := range lines {
+		tokens := l.tokenizeLine(line)
 
-	for scanner.Scan() {
-		line := scanner.Text()
-		tokens := tokenizeLine(line)
-		// fmt.Printf("[line] %s\n", line)
-		// fmt.Printf("[tokens] %v\n", tokens)
-
-		lexerLines = append(lexerLines, LexerTokens{String: line, Tokens: tokens})
-	}
-	if err := scanner.Err(); err != nil {
-		log.Fatal(err)
+		lexerTokens := LexerTokens{String: line, Tokens: tokens, Index: index}
+		lexerLines = append(lexerLines, lexerTokens)
 	}
 
-	// fmt.Print("########### Finished lexical analysis... ###########\n\n\n\n")
 	return lexerLines
 }
 
-func tokenizeLine(line string) []Token {
+func (l *Lexer) tokenizeLine(line string) []Token {
 	var tokens []Token
 
 	if len(line) == 0 {
@@ -118,16 +101,7 @@ func tokenizeLine(line string) []Token {
 		}
 
 		if isDigit(char) {
-			start := i
-			for i < len(line) && (isDigit(line[i]) || line[i] == '.') {
-				if start == i && line[i] == '.' {
-					i++
-					continue
-				}
-				i++
-			}
-
-			tokens = append(tokens, Token{Type: NUMBER, Lexeme: line[start:i]})
+			tokens, i = l.handleDigit(tokens, line, i)
 			continue
 		}
 
@@ -165,6 +139,23 @@ func tokenizeLine(line string) []Token {
 
 	return tokens
 }
+
+func (l *Lexer) handleDigit(tokens []Token, line string, i int) ([]Token, int) {
+	start := i
+	for i < len(line) && (isDigit(line[i]) || line[i] == '.') {
+		if start == i && line[i] == '.' {
+			i++
+			continue
+		}
+		i++
+	}
+
+	tokens = append(tokens, Token{Type: NUMBER, Lexeme: line[start:i]})
+	return tokens, i
+}
+
+// func (l *Lexer) handleAlpha(line string, i int) (Token, int) {
+// }
 
 func isAlpha(char byte) bool {
 	return (char >= 'a' && char <= 'z') || (char >= 'A' && char <= 'Z')

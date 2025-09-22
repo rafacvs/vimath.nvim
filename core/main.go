@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
 	"log"
@@ -24,27 +25,37 @@ func main() {
 	}
 	defer file.Close()
 
+	scanner := bufio.NewScanner(file)
+
+	var lines []string
+	for scanner.Scan() {
+		lines = append(lines, scanner.Text())
+	}
+	if err := scanner.Err(); err != nil {
+		log.Fatal(err)
+	}
+
 	fmt.Printf("########### Parsing file: %s ###########\n", filePath)
 
 	lexer := NewLexer()
-	stringTokens := lexer.LexicAnalysis(file)
+	stringTokens := lexer.LexicAnalysis(lines)
 	fmt.Print("########### Starting printing outputs... ###########\n")
 
 	evaluator := NewEvaluator()
 	for _, lexerToken := range stringTokens {
 		if len(lexerToken.Tokens) > 0 {
-			fmt.Printf("Line: %+v\n", lexerToken.String)
+			fmt.Printf("Line %02d > %+v\n", lexerToken.Index, lexerToken.String)
 			// fmt.Printf("Tokens: %+v\n",  lexerToken.Tokens)
 
 			if lexerToken.Tokens[0].Type != COMMENT {
 				parser := NewParser(lexerToken.Tokens)
 				assignments := parser.parseAssignmentStmt()
 				if assignments != nil {
-					fmt.Printf("Assignment: %s\n", assignments)
+					fmt.Printf("        > %s\n", assignments)
 					val, err := evaluator.Eval(assignments.Value)
 					if err == nil {
 						evaluator.symbols[assignments.Name] = val
-						fmt.Printf(" >> %f\n\n", val)
+						fmt.Printf("        > %f\n\n", val)
 					} else {
 						fmt.Printf("[Error on EVAL]")
 					}
