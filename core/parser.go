@@ -178,3 +178,47 @@ func (p *Parser) parseExpression() Expression {
 
 	return nil
 }
+
+func (p *Parser) parseTerm() {
+
+}
+
+func (p *Parser) parseFactor() Expression {
+	currentToken, err := p.Peek()
+	if err != nil {
+		fmt.Printf("[parseFactor] %s\n", err)
+	}
+
+	switch currentToken.Type {
+	case NUMBER:
+		value, _ := strconv.ParseFloat(currentToken.Lexeme, 64)
+		p.Advance()
+
+		return &Number{Value: value}
+	case IDENTIFIER:
+		p.Advance()
+		name := currentToken.Lexeme
+
+		return &Identifier{Name: name}
+	case LPAREN:
+		p.Advance()
+		expr := p.parseExpression()
+
+		currentToken, err = p.Advance()
+		if err != nil {
+			fmt.Printf("[parseFactor] %s\n", err)
+		}
+		if currentToken.Type != RPAREN {
+			fmt.Printf("[parseFactor] Expected ')'\n")
+			return nil
+		}
+
+		return &ParenExpr{Inner: expr}
+	case PLUS, MINUS:
+		p.Advance()
+		right := p.parseFactor()
+		return &UnaryExpr{Op: currentToken.Type, Right: right}
+	default:
+		return nil
+	}
+}
