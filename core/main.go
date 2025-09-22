@@ -38,7 +38,16 @@ func main() {
 			if lexerToken.Tokens[0].Type != COMMENT {
 				parser := NewParser(lexerToken.Tokens)
 				assignments := parser.parseAssignmentStmt()
-				fmt.Printf("Assignment: %s\n\n", assignments)
+				if assignments != nil {
+					fmt.Printf("Assignment: %s\n", assignments)
+					evaluator := NewEvaluator()
+					val, err := evaluator.Eval(assignments.Value)
+					if err != nil {
+						fmt.Printf("[error] NO EVAL\n")
+					}
+
+					fmt.Printf(" >> %f\n\n", val)
+				}
 			}
 		}
 	}
