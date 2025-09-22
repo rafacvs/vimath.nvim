@@ -1,0 +1,36 @@
+# Mathematical Functions and Complex Scenarios
+# Test order of operations (PEMDAS/BODMAS)
+order1 = 2 + 3 * 4
+order2 = (2 + 3) * 4
+order3 = 2 * 3 + 4 * 5
+order4 = 2 + 3 * 4 - 5
+order5 = 2 * 3 + 4 / 2
+
+# Test chained operations
+chain1 = 1 + 2 + 3 + 4
+chain2 = 2 * 3 * 4
+chain3 = 100 / 2 / 5
+
+# Test mixed operations
+mixed1 = 1.5 + 2.5 * 3
+mixed2 = (1.5 + 2.5) * 3
+mixed3 = 10 - 3 * 2 + 1
+
+# Test variable dependencies
+base = 10
+multiplier = 2.5
+offset = 5
+final = base * multiplier + offset
+
+# Test nested variable references
+level1 = 5
+level2 = level1 * 2
+level3 = level2 + level1
+level4 = level3 / level1
+
+# Test edge case numbers
+zero = 0
+one = 1
+negative = -1
+large = 999999999999.9999999999991
+small = 0.001
