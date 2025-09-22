@@ -158,14 +158,14 @@ The core interpreter can be run from the project root directory using:
 go run core/*.go --file <filename>
 ```
 
-The `--file` parameter specifies which file to parse from the `examples/` directory.
+The `--file` parameter specifies which file to parse from the project's root directory.
 
 #### Examples:
 
 ```bash
-go run core/*.go --file example1.txt
-go run core/*.go --file parser1.txt
-go run core/*.go --file evaluator1.txt
+go run core/*.go --file examples/example1.txt
+go run core/*.go --file examples/parser1.txt
+go run core/*.go --file examples/evaluator1.txt
 ```
 
 #### Available Test Files:
@@ -189,9 +189,8 @@ vimath.nvim/
 │   ├── parser.go
 │   ├── evaluator.go
 │   └── main.go
-├── plugin/              # Neovim plugin (Lua)
-│   ├── init.lua
-│   └── utils.lua
+├── lua/              # Neovim plugin (Lua)
+│   ├── vimath.lua
 ├── examples/            # Example input files
 │   ├── example1.txt
 │   ├── parser1.txt

@@ -11,10 +11,10 @@ import (
 
 func main() {
 	var filename string
-	flag.StringVar(&filename, "file", "example1.txt", "Filename to parse (searched in examples/ directory)")
+	flag.StringVar(&filename, "file", "example1.txt", "Filename to parse (based on project's root dir)")
 	flag.Parse()
 
-	filePath := filepath.Join("examples", filename)
+	filePath := filepath.Join(filename)
 	if _, err := os.Stat(filePath); os.IsNotExist(err) {
 		log.Fatalf("File not found: %s", filePath)
 	}
