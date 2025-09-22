@@ -76,15 +76,15 @@ type LexerTokens struct {
 * as eventually it'll go to main.
  */
 func (l *Lexer) LexicAnalysis(file *os.File) []LexerTokens {
-	fmt.Print("########### Starting lexical analysis... ###########\n")
+	// fmt.Print("########### Starting lexical analysis... ###########\n")
 	var lexerLines []LexerTokens
 	scanner := bufio.NewScanner(file)
 
 	for scanner.Scan() {
 		line := scanner.Text()
 		tokens := tokenizeLine(line)
-		fmt.Printf("[line] %s\n", line)
-		fmt.Printf("[tokens] %v\n", tokens)
+		// fmt.Printf("[line] %s\n", line)
+		// fmt.Printf("[tokens] %v\n", tokens)
 
 		lexerLines = append(lexerLines, LexerTokens{String: line, Tokens: tokens})
 	}
@@ -92,8 +92,7 @@ func (l *Lexer) LexicAnalysis(file *os.File) []LexerTokens {
 		log.Fatal(err)
 	}
 
-	fmt.Print("########### Finished lexical analysis... ###########\n")
-	fmt.Print("\n\n\n")
+	// fmt.Print("########### Finished lexical analysis... ###########\n\n\n\n")
 	return lexerLines
 }
 
