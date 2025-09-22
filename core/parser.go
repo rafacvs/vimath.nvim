@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"fmt"
+	"strconv"
 )
 
 type Node struct{}
@@ -56,60 +57,120 @@ func (p *Parser) Advance() (token Token, err error) {
 		return Token{}, errors.New("[advance] No more tokens")
 	}
 
+	current := p.Tokens[p.Pos]
 	p.Pos++
-	return p.Tokens[p.Pos], nil
+
+	return current, nil
 }
 
 func (p *Parser) parseAssignmentStmt() *AssignmentStmt {
-	currentToken, err := p.Peek()
+	currentToken, err := p.Advance()
 	if err != nil {
-		fmt.Print("[parseAssignmentStmt] %s", err)
+		fmt.Printf("[parseAssignmentStmt] %s", err)
 		return nil
 	}
-
 	if p.Empty() || currentToken.Type != IDENTIFIER {
 		return nil
 	}
 
 	name := currentToken.Lexeme
-	currentToken, err = p.Advance()
 
+	currentToken, err = p.Advance()
 	if err != nil {
-		fmt.Print("[parseAssignmentStmt] %s", err)
+		fmt.Printf("[parseAssignmentStmt] %s", err)
 		return nil
 	}
-
 	if p.Empty() || currentToken.Type != EQUAL {
-		return nil
-	}
-	currentToken, err = p.Advance()
-	if err != nil {
-		fmt.Print("[parseAssignmentStmt] %s", err)
 		return nil
 	}
 
 	val := p.parseExpression()
 	if val != nil {
-		fmt.Println("Error parsing expression:")
+		return &AssignmentStmt{Name: name, Value: val}
 	}
 
-	return &AssignmentStmt{Name: name, Value: val}
+	fmt.Println("Error parsing expression:")
+	return nil
 }
 
 func (p *Parser) parseExpression() Expression {
-	// currentToken := p.Tokens[p.Pos]
-	// nextToken := p.Tokens[p.Pos+1]
-	// nextNextToken := p.Tokens[p.Pos+1]
-	//
-	// if currentToken.Type == NUMBER {
-	// 	if (nextToken.Type == PLUS || nextToken.Type == MINUS) && (nextNextToken.Type == NUMBER) {
-	// 		return &BinaryExpr{
-	// 			Left:  currentToken,
-	// 			Op:    nextToken.Type,
-	// 			Right: nextNextToken,
-	// 		}
-	// 	}
-	// }
+	currentToken, err := p.Peek()
+	if err != nil {
+		fmt.Printf("[parseExpression] %s\n", err)
+		return nil
+	}
+
+	if currentToken.Type == NUMBER {
+		currentToken, err := p.Advance()
+		if err != nil {
+			fmt.Printf("[parseExpression] %s\n", err)
+			return nil
+		}
+
+		lval, _ := strconv.ParseFloat(currentToken.Lexeme, 64)
+
+		if p.Empty() {
+			return &Number{Value: lval}
+		}
+
+		// p.Empty() check above ensures Peek won't error
+		currentToken, _ = p.Peek()
+
+		IS_OP := currentToken.Type == PLUS ||
+			currentToken.Type == MINUS ||
+			currentToken.Type == MULTIPLY ||
+			currentToken.Type == DIVIDE
+
+		if IS_OP {
+			op := currentToken.Type
+
+			currentToken, err = p.Advance()
+			if err != nil {
+				fmt.Printf("[parseExpression] %s\n", err)
+				return nil
+			}
+
+			if currentToken.Type == NUMBER {
+				rval, _ := strconv.ParseFloat(currentToken.Lexeme, 64)
+				p.Advance()
+				return &BinaryExpr{
+					Left:  &Number{Value: lval},
+					Op:    op,
+					Right: &Number{Value: rval},
+				}
+			}
+		}
+
+		return &Number{Value: lval}
+	}
+
+	// handles single identifier not preceeded by an expression
+	if currentToken.Type == IDENTIFIER {
+		name := currentToken.Lexeme
+		p.Advance()
+		return &Identifier{Name: name}
+	}
+
+	if currentToken.Type == LPAREN {
+		currentToken, err = p.Advance()
+		if err != nil {
+			fmt.Printf("[parseExpression] %s\n", err)
+			return nil
+		}
+
+		expr := p.parseExpression()
+		currentToken, err = p.Peek() // p.parseExpression() modifies currentToken
+		if err != nil {
+			fmt.Printf("[parseExpression] %s\n", err)
+		}
+		if currentToken.Type != RPAREN {
+			fmt.Printf("[parseExpression] Expected ')'\n")
+			return nil
+		}
+
+		p.Advance() // consume RPAREN
+		return &ParenExpr{Inner: expr}
+	}
 
 	return nil
 }

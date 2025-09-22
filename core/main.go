@@ -24,7 +24,7 @@ func main() {
 		if len(lexerToken.Tokens) > 0 && lexerToken.Tokens[0].Type != COMMENT {
 			parser := NewParser(lexerToken.Tokens)
 			assignments := parser.parseAssignmentStmt()
-			fmt.Printf("Assignments: %+v\n\n", assignments)
+			fmt.Printf("Assignment: %s = %f\n\n", assignments.Name, assignments.Value)
 		}
 	}
 	fmt.Print("########### Finished printing outputs... ###########\n")
