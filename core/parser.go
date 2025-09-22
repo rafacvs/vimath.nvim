@@ -98,89 +98,49 @@ func (p *Parser) parseAssignmentStmt() *AssignmentStmt {
 * chaining expressions instead of a sequential algorithm
  */
 func (p *Parser) parseExpression() Expression {
-	currentToken, err := p.Peek()
-	if err != nil {
-		fmt.Printf("[parseExpression] %s\n", err)
-		return nil
-	}
+	left := p.parseTerm()
 
-	if currentToken.Type == NUMBER {
-		currentToken, err := p.Advance()
+	for !p.Empty() {
+		currentToken, err := p.Peek()
 		if err != nil {
-			fmt.Printf("[parseExpression] %s\n", err)
-			return nil
+			break
 		}
 
-		lval, _ := strconv.ParseFloat(currentToken.Lexeme, 64)
+		if currentToken.Type == PLUS || currentToken.Type == MINUS {
+			p.Advance()
 
-		if p.Empty() {
-			return &Number{Value: lval}
-		}
-
-		// p.Empty() check above ensures Peek won't error
-		currentToken, _ = p.Peek()
-
-		IS_OP := currentToken.Type == PLUS ||
-			currentToken.Type == MINUS ||
-			currentToken.Type == MULTIPLY ||
-			currentToken.Type == DIVIDE
-
-		if IS_OP {
 			op := currentToken.Type
-
-			currentToken, err = p.Advance()
-			if err != nil {
-				fmt.Printf("[parseExpression] %s\n", err)
-				return nil
-			}
-
-			if currentToken.Type == NUMBER {
-				rval, _ := strconv.ParseFloat(currentToken.Lexeme, 64)
-				p.Advance()
-				return &BinaryExpr{
-					Left:  &Number{Value: lval},
-					Op:    op,
-					Right: &Number{Value: rval},
-				}
-			}
+			right := p.parseTerm()
+			left = &BinaryExpr{Left: left, Op: op, Right: right}
+		} else {
+			break
 		}
-
-		return &Number{Value: lval}
 	}
 
-	// handles single identifier not preceeded by an expression
-	if currentToken.Type == IDENTIFIER {
-		name := currentToken.Lexeme
-		p.Advance()
-		return &Identifier{Name: name}
-	}
-
-	if currentToken.Type == LPAREN {
-		currentToken, err = p.Advance()
-		if err != nil {
-			fmt.Printf("[parseExpression] %s\n", err)
-			return nil
-		}
-
-		expr := p.parseExpression()
-		currentToken, err = p.Peek() // p.parseExpression() modifies currentToken
-		if err != nil {
-			fmt.Printf("[parseExpression] %s\n", err)
-		}
-		if currentToken.Type != RPAREN {
-			fmt.Printf("[parseExpression] Expected ')'\n")
-			return nil
-		}
-
-		p.Advance() // consume RPAREN
-		return &ParenExpr{Inner: expr}
-	}
-
-	return nil
+	return left
 }
 
-func (p *Parser) parseTerm() {
+func (p *Parser) parseTerm() Expression {
+	left := p.parseFactor()
 
+	for !p.Empty() {
+		currentToken, err := p.Peek()
+		if err != nil {
+			break
+		}
+
+		if currentToken.Type == MULTIPLY || currentToken.Type == DIVIDE {
+			p.Advance()
+
+			op := currentToken.Type
+			right := p.parseFactor()
+			left = &BinaryExpr{Left: left, Op: op, Right: right}
+		} else {
+			break
+		}
+	}
+
+	return left
 }
 
 func (p *Parser) parseFactor() Expression {
