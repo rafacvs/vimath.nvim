@@ -58,18 +58,42 @@ func (tok Token) String() string {
 	return fmt.Sprintf("%v(%q)", tok.Type, tok.Lexeme)
 }
 
-func Lexer(file *os.File) {
+type Lexer struct{}
+
+func NewLexer() *Lexer {
+	return &Lexer{}
+}
+
+type LexerTokens struct {
+	String string
+	Tokens []Token
+}
+
+/*
+* TODO: move file reading to main.go. Kept here for
+* now to make testing easier, as I'm not really sure
+* what I'm doing yet. Wont move to NewLexer either
+* as eventually it'll go to main.
+ */
+func (l *Lexer) LexicAnalysis(file *os.File) []LexerTokens {
+	// fmt.Print("########### Starting lexical analysis... ###########\n")
+	var lexerLines []LexerTokens
 	scanner := bufio.NewScanner(file)
 
 	for scanner.Scan() {
 		line := scanner.Text()
 		tokens := tokenizeLine(line)
-		fmt.Printf("[line] %s\n", line)
-		fmt.Printf("[tokens] %v\n", tokens)
+		// fmt.Printf("[line] %s\n", line)
+		// fmt.Printf("[tokens] %v\n", tokens)
+
+		lexerLines = append(lexerLines, LexerTokens{String: line, Tokens: tokens})
 	}
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
+
+	// fmt.Print("########### Finished lexical analysis... ###########\n\n\n\n")
+	return lexerLines
 }
 
 func tokenizeLine(line string) []Token {

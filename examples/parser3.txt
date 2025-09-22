@@ -1,0 +1,40 @@
+# Test file 3: Edge cases and complex scenarios
+# Testing unary operators, division, nested parentheses, and complex precedence
+
+# Unary operators
+x = +5
+y = -3.14
+z = +x
+w = -y
+
+# Division operations
+a = 10 / 2
+b = 15.5 / 3.1
+c = 100 / 4 / 5
+
+# Complex precedence with all operators
+d = 2 + 3 * 4 - 5 / 2
+e = (2 + 3) * (4 - 5) / 2
+f = -2 + 3 * -4
+
+# Nested parentheses
+g = ((1 + 2) * (3 - 4)) / ((5 + 6) - (7 * 8))
+h = (1 + (2 * (3 + (4 / 5))))
+i = ((((1 + 2) + 3) + 4) + 5)
+
+# Mixed unary and binary operations
+j = +5 * -3
+k = -10 / +2
+l = +(-5) + -(+3)
+
+# Complex real-world calculations
+price = 99.99
+tax_rate = 0.08
+discount = 0.15
+final_price = (price * (1 + tax_rate)) * (1 - discount)
+
+# Scientific notation-like calculations
+radius = 5.5
+area = 3.14159 * radius * radius
+circumference = 2 * 3.14159 * radius
+

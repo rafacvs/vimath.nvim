@@ -1,0 +1,60 @@
+# Test file 4: Error cases and boundary conditions
+# Testing parser error handling and edge cases
+
+# Valid cases with edge numbers
+zero = 0
+decimal_start = .5
+decimal_end = 5.
+large_number = 999999.999999
+small_number = 0.000001
+
+# Identifiers with underscores and mixed case
+var_name = 42
+VAR_NAME = 24
+var_123 = 123
+_underscore_start = 456
+
+# Boundary cases for expressions
+empty_parens = ()
+single_number = 42
+single_var = x
+
+# Error cases - these should fail gracefully
+# (Note: These are expected to cause parsing errors)
+
+# Missing right parenthesis
+unmatched_left = (1 + 2
+
+# Missing left parenthesis
+unmatched_right = 1 + 2)
+
+# Missing operator
+missing_op = 1 2
+
+# Missing assignment
+missing_assignment 1 + 2
+
+# Invalid characters (should be caught by lexer)
+invalid_char = 1 @ 2
+
+# Empty assignment
+empty_assign =
+
+# Multiple assignments on same line
+multi_assign = 1 + 2 = 3
+
+# Comments mixed with expressions
+mixed_comment = 1 + # comment 2
+
+# Valid complex cases that should work
+complex_valid = (1 + 2) * (3 - 4) / (5 + 6)
+nested_valid = ((1 + 2) * 3) - (4 / (5 + 6))
+unary_valid = -(+(-5)) + +(+3)
+
+# Edge case: very deep nesting
+deep_nest = (((((1 + 2) + 3) + 4) + 5) + 6)
+
+# Edge case: long identifier names
+very_long_variable_name_123 = 3.14159
+another_very_long_variable_name_with_many_underscores = 2.71828
+
