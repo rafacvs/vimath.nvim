@@ -106,12 +106,7 @@ func (l *Lexer) tokenizeLine(line string) []Token {
 		}
 
 		if isAlpha(char) {
-			start := i
-			for i < len(line) && (isAlpha(line[i]) || isDigit(line[i]) || line[i] == '_') && char != ' ' {
-				i++
-			}
-
-			tokens = append(tokens, Token{Type: IDENTIFIER, Lexeme: line[start:i]})
+			tokens, i = l.handleAlpha(tokens, line, i)
 			continue
 		}
 
@@ -133,7 +128,6 @@ func (l *Lexer) tokenizeLine(line string) []Token {
 		default:
 			fmt.Printf("Unexpected character: %c\n", char)
 		}
-
 		i++
 	}
 
@@ -154,8 +148,15 @@ func (l *Lexer) handleDigit(tokens []Token, line string, i int) ([]Token, int) {
 	return tokens, i
 }
 
-// func (l *Lexer) handleAlpha(line string, i int) (Token, int) {
-// }
+func (l *Lexer) handleAlpha(tokens []Token, line string, i int) ([]Token, int) {
+	start := i
+	for i < len(line) && (isAlpha(line[i]) || isDigit(line[i]) || line[i] == '_') {
+		i++
+	}
+
+	tokens = append(tokens, Token{Type: IDENTIFIER, Lexeme: line[start:i]})
+	return tokens, i
+}
 
 func isAlpha(char byte) bool {
 	return (char >= 'a' && char <= 'z') || (char >= 'A' && char <= 'Z')

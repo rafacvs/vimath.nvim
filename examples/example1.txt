@@ -5,14 +5,14 @@
 # normal, e o plugin ira renderizar os cálculos
 # em tempo real.
 
-t1 = -7.5
+t1 = 7.5
 t2 = 8.0
 MT = (t1 + t2) / 2
 
 t_apresentacao = 7
 T = (MT * 0.7) + (t_apresentacao * 0.3)
 
-P1 = 5.24
+p1 = 5.24
 p2 = 6.75
 P = (p1 + p2) / 2
 
