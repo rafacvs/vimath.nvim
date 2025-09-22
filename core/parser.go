@@ -93,6 +93,10 @@ func (p *Parser) parseAssignmentStmt() *AssignmentStmt {
 	return nil
 }
 
+/*
+* TODO: Refactor ensuring it's dyanamic, supporting
+* chaining expressions instead of a sequential algorithm
+ */
 func (p *Parser) parseExpression() Expression {
 	currentToken, err := p.Peek()
 	if err != nil {
