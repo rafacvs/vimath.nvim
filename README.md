@@ -1,6 +1,6 @@
 # 📑 vimath.nvim – A Text-Based Calculator for Neovim
 
-## 📌 Project Summary
+## Project Summary
 
 **vimath.nvim** is a Neovim plugin inspired by [NoteCalc](https://bbodi.github.io/notecalc3/) that allows you to write plain text containing assignments and expressions, and automatically view the calculated results **aligned in a column inside Neovim**.
 
@@ -12,23 +12,22 @@ The real goal is **learning by building**:
 - Designing a **mini language** (syntax + semantics).
 - Implementing a **lexer, parser, and evaluator**.
 - Integrating the language engine into Neovim via a plugin.
-- Later: rebuilding in **Zig** to explore performance and systems-level fundamentals.
 
-## 💡 Motivation
+## Motivation
 
-- ✨ **Inspiration**: This project is heavily inspired by _NoteCalc_. NoteCalc is a web-based notepad calculator. The idea here is to build a personal, Neovim-native alternative.
-- 🎯 **Personal Goal**: I’ve always liked the idea of mixing text and calculations. It feels natural and helps in day-to-day tasks (budgets, quick notes, project estimations).
-- 📚 **Learning Focus**:
+- **Inspiration**: This project is heavily inspired by _NoteCalc_. NoteCalc is a web-based notepad calculator. The idea here is to build a personal, Neovim-native alternative.
+- **Personal Goal**: I’ve always liked the idea of mixing text and calculations. It feels natural and helps in day-to-day tasks (budgets, quick notes, project estimations).
+- **Learning Focus**:
   - Understand the **mechanisms of compilers/interpreters** (lexer → parser → evaluator).
   - Explore **plugin development in Neovim**.
-  - Learn **Go** for the core engine and later **Zig** for performance/system insights.
+  - Learn **Go** for the core engine and **Lua** for Neovim integration
 
 > ⚠️ **Important Disclaimer**:  
 > This project is **not about the output itself** (calculating numbers in text).  
 > The project is **about the process** of creating a small language and integrating it into Neovim.  
 > The end result is a by-product — the real product is the learning journey.
 
-## 🖥️ Demonstration (Markdown Example)
+## Demonstration (Markdown Example)
 
 Input written in a Neovim buffer:
 
@@ -48,17 +47,16 @@ valor3 = (valor1 * 0.99) - (valor2 * 1.2)     ▏-7.155
 
 The `▏` marker represents the virtual text column — results are **not saved in the file**.
 
-## 🛠️ Stack & Technologies
+## Stack & Technologies
 
-| Layer            | Technology       | Purpose                                                                 |
-| ---------------- | ---------------- | ----------------------------------------------------------------------- |
-| **Core Engine**  | Go               | Implementation of lexer, parser, evaluator.                             |
-| **Plugin Layer** | Lua (Neovim API) | Extract expressions from buffer, call Go engine, render results.        |
-| **Future**       | Zig              | Re-implement interpreter focusing on memory management and performance. |
+| Layer            | Technology       | Purpose                                                          |
+| ---------------- | ---------------- | ---------------------------------------------------------------- |
+| **Core Engine**  | Go               | Implementation of lexer, parser, evaluator.                      |
+| **Plugin Layer** | Lua (Neovim API) | Extract expressions from buffer, call Go engine, render results. |
 
-## 🏗️ Architecture Overview
+## Architecture Overview
 
-### 🔹 Current Architecture
+### Current Architecture
 
 ```mermaid
 flowchart LR
@@ -95,36 +93,19 @@ flowchart LR
    - Sends expressions to Go engine.
    - Displays results using `nvim_buf_set_extmark` (virtual text).
 
-### 🔹 Future Architecture (with Zig)
-
-Planned future version built in **Zig** to learn:
-
-- **Explicit memory management**
-- **Performance optimizations**
-
 ## 🚀 Roadmap
 
-### 📋 Version Overview
+### V1 - Core Implementation
 
-| Version | Focus               | Status         | Key Deliverables               |
-| ------- | ------------------- | -------------- | ------------------------------ |
-| **v1**  | Core Implementation | 🚧 In Progress | Go interpreter + Neovim plugin |
-| **v2**  | Performance         | 📅 Planned     | Zig rewrite                    |
+#### Phase 1: Core Interpreter (Go)
 
----
+| Component     | Tasks                                    |
+| ------------- | ---------------------------------------- |
+| **Lexer**     | Tokenize identifiers, numbers, operators |
+| **Parser**    | Basic expressions, precedence handling   |
+| **Evaluator** | Symbol table, arithmetic, variables      |
 
-### 🎯 v1 - Core Implementation
-
-#### 🔧 Phase 1: Core Interpreter (Go)
-
-| Component          | Tasks                                    |
-| ------------------ | ---------------------------------------- |
-| **Lexer**          | Tokenize identifiers, numbers, operators |
-| **Parser**         | Basic expressions, precedence handling   |
-| **Evaluator**      | Symbol table, arithmetic, variables      |
-| **Error Handling** | Undefined variables, invalid syntax      |
-
-#### 🔌 Phase 2: Neovim Plugin (Lua)
+#### Phase 2: Neovim Plugin (Lua)
 
 | Feature                  | Description                        |
 | ------------------------ | ---------------------------------- |
@@ -134,11 +115,34 @@ Planned future version built in **Zig** to learn:
 
 ---
 
-### ⚡ v2 - Performance
+## Next Features (Planned)
 
-#### 🦎 Zig Implementation
+### Multiple Variable Assignments
 
-> **Goal**: Learn explicit memory management and performance optimization
+**Goal**: Support multiple variable assignments in a single line for improved productivity.
+
+#### Current Grammar:
+
+```ebnf
+assignment = identifier "=" expression ;
+```
+
+```txt
+x = 5
+y = 10
+z = x + y
+```
+
+#### Planned Grammar:
+
+```ebnf
+assignment_list = assignment { "," assignment } ;
+assignment      = identifier "=" expression ;
+```
+
+```txt
+x = 5, y = 10, z = x + y
+```
 
 ## 🚀 Running the Code
 
@@ -159,14 +163,9 @@ The `--file` parameter specifies which file to parse from the `examples/` direct
 #### Examples:
 
 ```bash
-# Run with the default example file
 go run core/*.go --file example1.txt
-
-# Run with parser test files
 go run core/*.go --file parser1.txt
-go run core/*.go --file parser2.txt
-go run core/*.go --file parser3.txt
-go run core/*.go --file parser4.txt
+go run core/*.go --file evaluator1.txt
 ```
 
 #### Available Test Files:
@@ -176,6 +175,10 @@ go run core/*.go --file parser4.txt
 - `parser2.txt` - Operator precedence testing (multiplication, mixed operations)
 - `parser3.txt` - Edge cases and complex scenarios (unary operators, division, nested parentheses)
 - `parser4.txt` - Error cases and boundary conditions
+- `evaluator1.txt` - Basic evaluator functionality tests
+- `evaluator2.txt` - Variable dependencies and complex calculations
+- `evaluator3.txt` - Edge cases and error handling (division by zero, unary operators)
+- `evaluator4.txt` - Mathematical functions and complex scenarios
 
 ## 📂 Repository Structure
 
@@ -194,7 +197,11 @@ vimath.nvim/
 │   ├── parser1.txt
 │   ├── parser2.txt
 │   ├── parser3.txt
-│   └── parser4.txt
+│   ├── parser4.txt
+│   ├── evaluator1.txt
+│   ├── evaluator2.txt
+│   ├── evaluator3.txt
+│   └── evaluator4.txt
 ├── docs/                # Documentation
 └── README.md            # This document
 ```

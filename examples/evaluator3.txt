@@ -1,0 +1,32 @@
+# Edge Cases and Error Handling Tests
+# Test division by zero
+x = 10
+y = 0
+result1 = x / y
+
+# Test unary operators
+neg = -5
+pos = +3
+double_neg = --7
+
+# Test complex nested expressions
+a = 2
+b = 3
+c = 4
+complex1 = (a + b) * (c - a)
+complex2 = a * b + c * (a + b)
+
+# Test variable reassignment
+var = 10
+var = var * 2
+var = var + 5
+
+# Test parentheses precedence
+paren_test1 = (2 + 3) * 4
+paren_test2 = 2 + (3 * 4)
+paren_test3 = ((2 + 3) * 4) / 5
+
+# Test decimal precision
+decimal1 = 3.14159
+decimal2 = 0.5
+decimal3 = 1.0

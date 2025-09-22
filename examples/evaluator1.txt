@@ -1,0 +1,8 @@
+# must calc
+x = (5)
+y = 12
+z = 23.04
+
+# doesnt mean nothing: whatever output is fine
+a = (3)(2)(1)
+

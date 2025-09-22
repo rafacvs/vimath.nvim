@@ -30,6 +30,7 @@ func main() {
 	stringTokens := lexer.LexicAnalysis(file)
 	fmt.Print("########### Starting printing outputs... ###########\n")
 
+	evaluator := NewEvaluator()
 	for _, lexerToken := range stringTokens {
 		if len(lexerToken.Tokens) > 0 {
 			fmt.Printf("Line: %+v\n", lexerToken.String)
@@ -38,7 +39,17 @@ func main() {
 			if lexerToken.Tokens[0].Type != COMMENT {
 				parser := NewParser(lexerToken.Tokens)
 				assignments := parser.parseAssignmentStmt()
-				fmt.Printf("Assignment: %s\n\n", assignments)
+				if assignments != nil {
+					fmt.Printf("Assignment: %s\n", assignments)
+					val, err := evaluator.Eval(assignments.Value)
+					if err == nil {
+						evaluator.symbols[assignments.Name] = val
+						fmt.Printf(" >> %f\n\n", val)
+					} else {
+						fmt.Printf("[Error on EVAL]")
+					}
+
+				}
 			}
 		}
 	}
