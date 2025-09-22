@@ -21,14 +21,14 @@ func (e *Evaluator) Eval(expr Expression) (val float64, err error) {
 	case *Identifier:
 		val, exists := e.symbols[node.Name]
 		if !exists {
-			fmt.Printf("undeclared variable: %s\n", node.Name)
+			// fmt.Printf("undeclared variable: %s\n", node.Name)
 		}
 
 		return val, nil
 	case *ParenExpr:
 		inner, err := e.Eval(node.Inner)
 		if err != nil {
-			fmt.Printf("*ParenExpr: no inner\n")
+			// fmt.Printf("*ParenExpr: no inner\n")
 		}
 
 		return inner, nil

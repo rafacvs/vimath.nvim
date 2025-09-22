@@ -126,7 +126,7 @@ func (l *Lexer) tokenizeLine(line string) []Token {
 		case ')':
 			tokens = append(tokens, Token{Type: RPAREN, Lexeme: string(char)})
 		default:
-			fmt.Printf("Unexpected character: %c\n", char)
+			// fmt.Printf("Unexpected character: %c\n", char)
 		}
 		i++
 	}

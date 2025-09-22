@@ -2,7 +2,6 @@ package main
 
 import (
 	"errors"
-	"fmt"
 	"strconv"
 )
 
@@ -66,7 +65,7 @@ func (p *Parser) Advance() (token Token, err error) {
 func (p *Parser) parseAssignmentStmt() *AssignmentStmt {
 	currentToken, err := p.Advance()
 	if err != nil {
-		fmt.Printf("[parseAssignmentStmt] %s", err)
+		// fmt.Printf("[parseAssignmentStmt] %s", err)
 		return nil
 	}
 	if p.Empty() || currentToken.Type != IDENTIFIER {
@@ -77,7 +76,7 @@ func (p *Parser) parseAssignmentStmt() *AssignmentStmt {
 
 	currentToken, err = p.Advance()
 	if err != nil {
-		fmt.Printf("[parseAssignmentStmt] %s", err)
+		// fmt.Printf("[parseAssignmentStmt] %s", err)
 		return nil
 	}
 	if p.Empty() || currentToken.Type != EQUAL {
@@ -89,7 +88,7 @@ func (p *Parser) parseAssignmentStmt() *AssignmentStmt {
 		return &AssignmentStmt{Name: name, Value: val}
 	}
 
-	fmt.Println("Error parsing expression:")
+	// fmt.Println("Error parsing expression:")
 	return nil
 }
 
@@ -142,7 +141,7 @@ func (p *Parser) parseTerm() Expression {
 func (p *Parser) parseFactor() Expression {
 	currentToken, err := p.Peek()
 	if err != nil {
-		fmt.Printf("[parseFactor] %s\n", err)
+		// fmt.Printf("[parseFactor] %s\n", err)
 	}
 
 	switch currentToken.Type {
@@ -162,10 +161,10 @@ func (p *Parser) parseFactor() Expression {
 
 		currentToken, err = p.Advance()
 		if err != nil {
-			fmt.Printf("[parseFactor] %s\n", err)
+			// fmt.Printf("[parseFactor] %s\n", err)
 		}
 		if currentToken.Type != RPAREN {
-			fmt.Printf("[parseFactor] Expected ')'\n")
+			// fmt.Printf("[parseFactor] Expected ')'\n")
 			return nil
 		}
 
