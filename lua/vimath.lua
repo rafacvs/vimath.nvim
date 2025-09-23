@@ -35,7 +35,6 @@ function M.get_current_buffer_content()
 
 	local cmd = "cd " .. PLUGIN_PATH .. " && go run core/*.go --file tmp/" .. FILE_NAME
 	local output = vim.fn.system(cmd)
-	-- print(output)
 	M.render_results(output, bufnr)
 
 	CURR_FILE_NAME = FILES_PATH .. "OUTPUT_" .. FILE_NAME
@@ -51,15 +50,11 @@ end
 function M.render_results(output, bufnr)
 	for line in output:gmatch("[^\r\n]+") do
 		if not line:find("^%[") then
-			print(line)
 			local index, val = line:match("(%S+)%s+(%S+)")
-			print(index, val)
 			local i = tonumber(index)
 			local v = tonumber(val)
 
 			if i and v then
-				print(i)
-				print(v)
 				vim.api.nvim_buf_set_extmark(bufnr, ns_id, i, 0, {
 					virt_text = { { tostring(v), "TODO" } },
 					virt_text_pos = "right_align",
